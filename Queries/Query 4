@@ -1,0 +1,27 @@
+4. Follow-up: Which segment had the most increase in unique products in 2021 vs 2020? The final output contains these fields,
+segment
+product_count_2020
+product_count_2021
+difference
+
+
+**Query**
+
+WITH x as (
+	SELECT segment, COUNT(distinct product_code) AS product_count_2020
+    FROM fact_sales_monthly
+    JOIN dim_product using (product_code)
+    WHERE fiscal_year=2020
+    GROUP BY segment
+    ),
+    y as (
+	SELECT segment, COUNT(distinct product_code) AS product_count_2021
+    FROM fact_sales_monthly
+    JOIN dim_product using (product_code)
+    WHERE fiscal_year=2021
+    GROUP BY segment)
+    SELECT x.segment,product_count_2020,product_count_2021,(product_count_2021-product_count_2020) as difference
+    FROM x
+    JOIN y using (segment)
+    ORDER BY difference DESC
+   
