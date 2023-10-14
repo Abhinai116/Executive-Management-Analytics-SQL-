@@ -1,0 +1,22 @@
+2. What is the percentage of unique product increase in 2021 vs. 2020? Thefinal output contains these fields,
+  unique_products_2020
+  unique_products_2021
+  percentage_chg
+
+
+**Query**
+
+WITH x as (
+	SELECT COUNT(distinct product_code) AS unique_product_2020
+    FROM fact_sales_monthly
+    WHERE fiscal_year=2020),
+    y as (
+	SELECT COUNT(distinct product_code) AS unique_product_2021
+    FROM fact_sales_monthly
+    WHERE fiscal_year=2021),
+    z AS (
+    SELECT ((unique_product_2021-unique_product_2020)*100/unique_product_2020) AS percentage_chg
+    FROM x
+    JOIN y)
+    SELECT unique_product_2020,unique_product_2021,round(percentage_chg,2) percentage_chg
+    FROM x,y,z
